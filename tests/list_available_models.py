@@ -4,7 +4,6 @@ latest Google GenAI SDK. Useful for selecting compatible models and
 debugging API access issues.
 """
 
-
 import os
 from dotenv import load_dotenv
 import google.genai as genai
