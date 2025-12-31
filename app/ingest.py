@@ -1,3 +1,11 @@
+"""
+This is the ingestion module of the pipeline.
+
+This part basically loads the documentation from disk and converts them into
+RAG-ready chunks with the help of chunker module. This is the entry point for
+turning raw documents into structured data for the embeddings and retrieval module.
+"""
+
 from pathlib import Path
 from typing import List, Dict
 from .chunker import chunk_markdown
