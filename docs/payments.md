@@ -29,9 +29,7 @@ Every generated invoice object is required to contain:
 \* \*\*Total Payable:\*\* The final amount, rounded to two decimal places, required for payment authorization.
 
 
-
 ---
-
 
 
 \## 3. GST \& Taxation Logic
@@ -65,9 +63,7 @@ Taxation is determined at the time of invoice finalization using a three-factor 
 Tax rates are stored in the `tax-config` relational table. To minimize latency during the checkout flow, these rates are cached in a \*\*Redis\*\* cluster with a 24-hour Time-To-Live (TTL). A manual cache-clear is triggered via the Admin Portal whenever tax laws are updated.
 
 
-
 ---
-
 
 
 \## 4. Discount Hierarchy
@@ -87,9 +83,7 @@ Discounts are applied strictly \*\*before\*\* tax calculation to ensure the taxa
 | \*\*Promotional Coupon\*\* | Validated against the `promo-service` for expiration and usage limits. | 3 |
 
 
-
 ---
-
 
 
 \## 5. State Machine \& Transitions
@@ -109,9 +103,7 @@ The `billing-service` manages the internal status of an invoice to ensure data i
 \* \*\*CANCELLED:\*\* Reversal state used if the order is returned or the payment fails the maximum retry threshold.
 
 
-
 ---
-
 
 
 \## 6. Audit \& Compliance
