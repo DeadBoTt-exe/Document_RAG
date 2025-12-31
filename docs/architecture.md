@@ -93,9 +93,7 @@ We utilize \*\*Apache Kafka\*\* as the backbone for inter-service communication.
 \* \*\*Documentation:\*\* All RESTful endpoints are exposed via OpenAPI 3.0 specs hosted on the internal Developer Portal.
 
 
-
 ---
-
 
 
 \## 5. Resilience \& Fault Tolerance
@@ -117,9 +115,7 @@ Messages that fail processing after 5 attempts are routed to a `service-name.dlq
 \* \*\*Recovery:\*\* Admin CLI tools allow for "replay" functionality once the root cause is resolved.
 
 
-
 ---
-
 
 
 \## 6. Security \& Compliance
