@@ -1,3 +1,14 @@
+"""
+This is the RAG engine module.
+
+It implements the core Retrieval-Augmented Generation (RAG) logic:
+- Loads and indexes documentation
+- Retrieves relevant context using semantic search
+- Constructs grounded prompts
+- Queries the LLM (Gemini in our case)
+- Returns answers along with source citations
+"""
+
 from typing import Dict
 import os
 
