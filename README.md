@@ -49,7 +49,7 @@ flowchart LR
 
 ### Clone the repository
 ```bash
-git clone https://github.com/DeadBoTt-exe/Document_RAG.git
+git clone https://github.com/DeadBoTt-exe/DocuMind-AI.git
 ```
 
 ### Create and activate a virtual environment
