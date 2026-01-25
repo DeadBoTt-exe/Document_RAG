@@ -1,18 +1,23 @@
-# Engineering Docs RAG (Gemini-powered)
+# Engineering Docs RAG
 
-A **Retrieval-Augmented Generation (RAG)** system for querying engineering documentation using **semantic search (FAISS)** and **Gemini 2.5 Flash**.  
-Designed to simulate an **internal enterprise knowledge assistant** for engineering teams.
+A production-style **Retrieval-Augmented Generation (RAG)** system
+for querying large engineering documentation using **semantic search**,  
+**grounded LLM generation**, and **evidence-based confidence scoring**.
+
+The project is designed to simulate an **internal enterprise documentation assistant**
+with a strong emphasis on correctness, transparency, and system design.
+
 
 ---
 
 ## Features
-
-- Ingests Markdown engineering documents
-- Section-based chunking with metadata
-- Semantic embeddings for document chunks
-- FAISS-based vector similarity search
-- Gemini-powered grounded answer generation
-- Isolated test suite and model inspection utilities
+- Ingests large PDF engineering documentation
+- Cleans and chunks text with page-level metadata
+- Offline embedding and indexing into Qdrant
+- Semantic vector search at query time
+- Gemini powered answer generation
+- Deterministic grounding validation to reject hallucinations
+- Evidence-based confidence scoring for answers
 - Secure API key management via environment variables
 
 ---
@@ -81,47 +86,88 @@ GEMINI_API_KEY=your_api_key_here
 ```
 ---
 
-## Running the RAG Engine
+## Running the System
 
-Run the test to verify the full RAG pipeline:
-```python
-python -m tests.test_rag
-```
+Start Qdrant (Docker) 
 
----
-
-## Running the API
-
-Start the FastAPI server:
 ```bash
-uvicorn app.main:app --reload
+docker run -d \
+  --name qdrant \
+  -p 6333:6333 \
+  -v qdrant_storage:/qdrant/storage \
+  qdrant/qdrant
 ```
+- If you dont have Docker, Set it up seperately.
 
-Open your browser at:
+
+Index Documentation:
+```python
+python -m code.index_documents
+```
+This step:
+- Parses the PDF
+- Cleans and chunks text
+- Generates embeddings
+- Stores vectors in Qdrant
+
+Run the API:
+```bash
+python -m code.main
+```
+It will be here - 
+```bash
+http://127.0.0.1:8000
+```
+Interactive docs will be here:
 ```bash
 http://127.0.0.1:8000/docs
 ```
 
----
-
-## Testing
-
-- Tests are located in the tests/ 
-- Current tests validate end-to-end retrieval and generation
-
-Model availability can be inspected via:
-```python
-python tests/list_available_models.py
+Exampele Query - 
 ```
+{
+  "question": "What is a service control policy in AWS Organizations?"
+}
+```
+---
+
+
+## Tech Stack
+
+- LLM: Gemini
+- Vector DB: Qdrant
+- Embeddings: Sentence Transformers 
+- API: FastAPI
+- Validation: Custom logic with selective LangChain usage
 
 ---
 
-## Working
+## Project Structure
 
-- Engineering docs are loaded and chunked by section
-- Chunks are embedded into vector space
-- FAISS indexes embeddings for fast similarity search
-- Relevant chunks are retrieved for a query
-- Gemini generates an answer using only retrieved context
-- Sources are returned alongside the answer
+```
+DocuMind
+|
+├── code/
+│   ├── __init__.py
+│   ├── chunker.py
+│   ├── cleaner.py
+│   ├── confidence.py
+│   ├── embeddings.py
+│   ├── index_documents.py
+│   ├── ingest.py
+│   ├── validator.py
+│   ├── rag.py
+│   └── main.py  
+│
+├── docs/
+│   ├── AWS SDKs and Tools - Reference Guide - aws-sdk-ref.pdf
+│   ├── organizations-userguide.pdf
+│  
+├── .gitignore
+├── .env
+├── LICENSE
+├── requirements.txt
+└── README.md
+
+```
 
