@@ -1,25 +1,27 @@
+"""
+Offline indexing pipeline.
+
+Parses documentation, chunks text, generates embeddings,
+and indexes them into a local Qdrant vector database.
+"""
+
 from code.ingest import load_pdf_documents
 from code.embeddings import EmbeddingModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
 import uuid
 
-print("Indexing script started")
+# print("Indexing script started") #Its a safety net...if you run this script and nothing happens, then this will help you to debug.
 
 COLLECTION_NAME = "aws-org-docs"
 
-# 1. Load PDF chunks
 chunks = load_pdf_documents()
 texts = [c["text"] for c in chunks]
 
-# 2. Embed once
 embedder = EmbeddingModel()
 embeddings = embedder.embed(texts)
 
-# 3. Connect to Qdrant
 client = QdrantClient(host="localhost", port=6333)
-
-# 4. Create collection if missing
 if not client.collection_exists(COLLECTION_NAME):
     client.create_collection(
         collection_name=COLLECTION_NAME,
@@ -29,7 +31,6 @@ if not client.collection_exists(COLLECTION_NAME):
         ),
     )
 
-# 5. Upload vectors
 points = []
 for emb, chunk in zip(embeddings, chunks):
     points.append(
@@ -43,7 +44,7 @@ for emb, chunk in zip(embeddings, chunks):
         )
     )
 
-UPSERT_BATCH_SIZE = 64  # safe on Windows
+UPSERT_BATCH_SIZE = 64
 
 for i in range(0, len(points), UPSERT_BATCH_SIZE):
     batch = points[i : i + UPSERT_BATCH_SIZE]
@@ -56,4 +57,4 @@ for i in range(0, len(points), UPSERT_BATCH_SIZE):
 
 print(f"Indexed {len(points)} chunks into Qdrant")
 
-print("Indexing script finished")
+# print("Indexing script finished") #Its a safety net...Same as the one above.
